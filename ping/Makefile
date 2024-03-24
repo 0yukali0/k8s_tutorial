@@ -11,6 +11,10 @@ $(BUILD_DIR): go.mod go.sum $(shell find pkg)
 	-o "$(BUILD_DIR)/$(PING_EXE)" \
 	./pkg/cmd/
 
+.PHONY: lint
+lint:
+	golangci-lint run ./...
+
 .PHONY: clean
 clean: 
 	@echo "cleaning up caches and output"
