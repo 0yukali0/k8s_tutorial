@@ -1,4 +1,6 @@
 GO := go
+GOFMT := gofmt
+GOCI_LINT := golangci-lint
 BUILD_DIR := build
 PING_EXE := ping.exe
 
@@ -13,7 +15,11 @@ $(BUILD_DIR): go.mod go.sum $(shell find pkg)
 
 .PHONY: lint
 lint:
-	golangci-lint run ./...
+	"$(GOCI_LINT)" run ./...
+
+.PHONY: fmt
+fmt:
+	"$(GOFMT)" -w -l $(shell find pkg)
 
 .PHONY: clean
 clean: 

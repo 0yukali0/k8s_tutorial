@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"ping/pkg/webservice"
+	"heroroad/pkg/webservice"
 )
 
 func main() {

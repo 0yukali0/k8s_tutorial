@@ -18,7 +18,7 @@ func init() {
 		engine = gin.Default()
 		for _, route := range webRoutes {
 			switch route.Method {
-			case "Get":
+			case "GET":
 				engine.GET(route.Pattern, route.HandlerFunc)
 			}
 		}
