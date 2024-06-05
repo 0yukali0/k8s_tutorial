@@ -9,3 +9,5 @@ sudo curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontain
 
 
 sudo apt-get update && sudo apt-get install cri-o cri-o-runc
+sudo systemctl enable crio
+sudo systemctl start crio
