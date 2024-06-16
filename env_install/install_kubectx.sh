@@ -1,3 +1,9 @@
+KUBECTX=kubectx
+if command -v $KUBECTX &> /dev/null; then
+	echo "kubectx is already installed"
+	exit 0
+fi
+
 VERSION=0.9.5
 arch=$(uname -m)
 path=/usr/local/kubectx

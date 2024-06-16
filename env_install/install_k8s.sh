@@ -1,3 +1,7 @@
+if command -v kubectl &> /dev/null && command -v kubeadm &> /dev/null && command -v kubelet &> /dev/null; then
+	echo "k8s components are already installed"
+	exit 0
+fi
 sudo apt-get update
 # apt-transport-https may be a dummy package; if so, you can skip that package
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg

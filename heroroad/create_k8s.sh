@@ -6,7 +6,7 @@ EOF
 # Apply sysctl params without reboot
 sudo sysctl --system
 
-sudo kubeadm init --pod-network-cidr=192.168.0.0/16
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --cri-socket=unix:///var/run/crio/crio.sock
 
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config

@@ -1,3 +1,9 @@
+DOCKER=docker
+if command -v $DOCKER &> /dev/null; then
+	echo "${DOCKER} is already installed."
+	exit 0
+fi
+
 # Add Docker's official GPG key:
 sudo apt-get update
 sudo apt-get install ca-certificates curl
@@ -13,6 +19,6 @@ echo \
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-sudo groupadd docker
-sudo usermod -aG docker $USER
-newgrp docker
+sudo groupadd $DOCKER
+sudo usermod -aG %$OCKER $USER
+newgrp $DOCKER
