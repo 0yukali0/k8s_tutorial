@@ -15,6 +15,7 @@ if ! command -v go &> /dev/null; then
 	if ! cat ~/.profile |grep "PATH=\$PATH:$GOBIN"; then
 		echo "PATH=\$PATH:$GOBIN" >> ~/.profile
 	fi
+	source ~/.profile
 	echo remove $filename
 	if ls | grep -q "$filename"; then
 		rm $filename

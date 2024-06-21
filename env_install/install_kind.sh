@@ -10,8 +10,8 @@ if command -v $GO &> /dev/null; then
 	echo "kind installation by go"
         $GO install "sigs.k8s.io/kind@${KIND_VERSION}"
         GOPATH=$(go env GOPATH)
-        "PATH=\$PATH:${GOPATH}/bin" >> ~/.profile
-        export "PATH=\$PATH:${GOPATH}/bin"
+        echo "PATH=\$PATH:${GOPATH}/bin" >> ~/.profile
+	source ~/.profile
 else
 	echo "kind installation via shell"
         # For AMD64 / x86_64
