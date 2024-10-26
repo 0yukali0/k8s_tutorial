@@ -15,6 +15,16 @@ import (
 type Manager struct {
 	Server      *gin.Engine
 	Controllers []*controller.Controller
+	Events chan interface{}
+}
+
+func NewManager() *Manager {
+	events := make(chan interface{}, 100)
+	return &Manager{
+		Server:      NewServer(),
+		Controllers: NewControllers(events),
+		Event: events,
+	}
 }
 
 func (m *Manager) Run() {
@@ -23,29 +33,51 @@ func (m *Manager) Run() {
 		go ctrl.Run(ctx, 2)
 	}
 	defer cancel()
-	m.Server.Run(fmt.Sprintf("127.0.0.1:%d", common.GetGlobalConfig().ServerPort))
-}
-
-func NewManager() *Manager {
-	return &Manager{
-		Server:      NewServer(),
-		Controllers: NewControllers(),
+	go m.Server.Run(fmt.Sprintf("127.0.0.1:%d", common.GetGlobalConfig().ServerPort))
+	for {
+		select {
+		// channel signal timer, ticker, chan, context
+		case obj <- m.Events:
+			GlobalPrint(obj)
+		}
 	}
 }
 
 func NewServer() *gin.Engine {
 	r := gin.Default()
-	r.GET("/download", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
+	r.GET("/pods", func(c *gin.Context) {
+		c.IndentedJSON(http.StatusOK, m.result)
 	})
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	return r
 }
 
-func NewControllers() []*controller.Controller {
+func NewControllers(events chan interface{}) []*controller.Controller {
 	return []*controller.Controller{
-		controller.NewPodMonitor(),
+		controller.NewPodMonitor(events),
+	}
+}
+
+func (m *Manager) GlobalPrint(obj interface{}) {
+	switch info := obj.(type) {
+	case (*v1.Pod):
+		m.result = NewPodInfo(info)
+	case (*v1.K8sEvent):
+	}
+}
+
+type PodInfo struct {
+	Name string  `json:"name"`
+	Namespace string `json:"namespace"`
+	Image string `json:"image"`
+	Phase string `json:"phase"`
+}
+
+func NewPodInfo(p *v1.Pod) {
+	return PodInfo{
+		Name: p.ObjectMeta.Name,
+		Namespace: p.ObjectMeta.Namespace,
+		Image: p.Spec.Containers[0].Image,
+		Phase: p.Status.Phase,
 	}
 }

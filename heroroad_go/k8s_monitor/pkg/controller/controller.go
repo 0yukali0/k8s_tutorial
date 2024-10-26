@@ -17,10 +17,10 @@ import (
 
 type Controller struct {
 	queue    workqueue.TypedRateLimitingInterface[string]
-	informer cache.SharedIndexInformer 
+	informer cache.SharedIndexInformer
 }
 
-func NewController(queue workqueue.TypedRateLimitingInterface[string], informer cache.SharedIndexInformer ) *Controller {
+func NewController(queue workqueue.TypedRateLimitingInterface[string], informer cache.SharedIndexInformer, event chan interface{}) *Controller {
 	return &Controller{
 		informer: informer,
 		queue:    queue,
@@ -40,6 +40,7 @@ func (c *Controller) processNextItem() bool {
 
 func (c *Controller) syncToStdout(key string) error {
 	obj, exists, err := c.informer.GetIndexer().GetByKey(key)
+	event <- obj
 	if err != nil {
 		common.GetLogger().Error("Fetching object with key %s from store failed with %v", key, err)
 		return err
